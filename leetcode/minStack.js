@@ -28,7 +28,7 @@ minStack.getMin();   --> Returns -2.
 var MinStack = function () {
   this.index = 0;
   this.storage = {};
-  this.minStack = {};
+  this.minStor = {};
 };
 
 /**
@@ -37,7 +37,13 @@ var MinStack = function () {
  */
 MinStack.prototype.push = function (x) {
   this.storage[this.index] = x;
+  let length = Object.keys(this.minStor).length;
+  if (length === 0 || x <= this.minStor[length - 1]) {
+    this.minStor[length] = x;
+  }
+
   this.index += 1;
+
   return this.index;
 };
 
@@ -48,6 +54,12 @@ MinStack.prototype.pop = function () {
   let temp;
   temp = this.storage[this.index - 1];
   // console.log("temp: ", temp);
+
+  let length = Object.keys(this.minStor).length;
+  if (temp === this.minStor[length - 1]) {
+    delete this.minStor[length - 1];
+  }
+
   delete this.storage[this.index - 1];
   this.index -= 1;
   // console.log("this in pop: ", this);
@@ -66,7 +78,7 @@ MinStack.prototype.top = function () {
  */
 MinStack.prototype.getMin = function () {
   // console.log(Object.values(this));
-  return Math.min(...Object.values(this.storage));
+  return this.minStor[Object.keys(this.minStor).length - 1];
 };
 
 /**
