@@ -21,3 +21,94 @@ Output: True
 Note:
 The string size will be in the range [1, 100].
  */
+
+/**
+ * @param {string} s
+ * @return {boolean}
+ */
+
+// try again using similar solution to recent problems of +1, -1 positive vs negative outcome moving forward and moving backward
+var checkValidString = function (s) {
+  let score = 0;
+
+  for (let i = 0; i < s.length; i++) {
+    // console.log("left to right score: ", score);
+    if (s[i] === "(" || s[i] === "*") {
+      score++;
+    } else {
+      score--;
+    }
+    if (score < 0) return false;
+  }
+  score = 0;
+  for (let i = s.length - 1; i >= 0; i--) {
+    // console.log("right to left score: ", score);
+    if (s[i] === ")" || s[i] === "*") {
+      score++;
+    } else {
+      score--;
+    }
+    if (score < 0) return false;
+  }
+  return true;
+};
+
+console.log(checkValidString("()"));
+console.log(checkValidString("(*)"));
+console.log(checkValidString("(*))"));
+console.log(checkValidString("(*()"));
+console.log(checkValidString("(((******)))"));
+console.log(checkValidString("(((******))"));
+console.log(
+  checkValidString("(())((())()()(*)(*()(())())())()()((()())((()))(*")
+);
+
+// var checkValidString = function (s) {
+//   let matches = {
+//     "(": ")",
+//     "*": "*",
+//   };
+//
+//   // create a stack to keep track of parens, braces, or brackets
+//   const stack = [];
+//   let stars = 0;
+//   // iterate over the input
+//   for (let i = 0; i < s.length; i++) {
+//     let char = s[i];
+//     // check if character is in matches
+//     if (matches.hasOwnProperty(char)) {
+//       //push to stack
+//       stack.push(char);
+//       if (char === "*") {
+//         stars++;
+//       }
+//     } else if (char === ")") {
+//       // if character is a closing of a pair, pop off the stack and check if it matches with the correct pair
+//       let tempPop = stack.pop();
+//       if (tempPop === "*") {
+//         stars--;
+//       }
+//       if (
+//         stack.length === 0 ||
+//         (matches[tempPop] !== char && matches[tempPop] !== "*")
+//       ) {
+//         // if the pair is incorrect return false
+//         return false;
+//       }
+//       // else if (matches[tempPop] !== char && stars > 1) {
+//       //   // if the pair is incorrect and an asterisk is available
+//       //   // decrement star count and put popped item back on stack
+//       //   stack.push(tempPop);
+//       //   stars--;
+//       // }
+//     }
+// //   }
+//
+//   console.log("stack: ", stack, stack.length);
+//   console.log("stars: ", stars);
+//   // if (stack.length <= stars) {
+//   //   return true;
+//   // }
+//   // returns true if stack is empty (!0 === true) and all pairs have been popped off
+//   return !stack.length;
+// };
