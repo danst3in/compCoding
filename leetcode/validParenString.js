@@ -29,10 +29,10 @@ The string size will be in the range [1, 100].
 
 // try again using similar solution to recent problems of +1, -1 positive vs negative outcome moving forward and moving backward
 //
-// moving left to right if count of ')' is greater than count of '(' + count of  '*' return false
 var checkValidString = function (s) {
   let score = 0;
 
+  // moving left to right if count of ')' is greater than count of '(' + count of  '*' return false
   for (let i = 0; i < s.length; i++) {
     // console.log("left to right score: ", score);
     if (s[i] === "(" || s[i] === "*") {
