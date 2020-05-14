@@ -27,7 +27,8 @@ The string size will be in the range [1, 100].
  * @return {boolean}
  */
 
-// try again using similar solution to recent problems of +1, -1 positive vs negative outcome moving forward and moving backward
+// try again using similar solution to recent problems of +1, -1 positive vs negative outcome
+//  moving forward and moving backward
 //
 var checkValidString = function (s) {
   let score = 0;
