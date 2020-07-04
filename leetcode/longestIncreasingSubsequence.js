@@ -38,33 +38,36 @@ Follow up: Could you improve it to O(n log n) time complexity?
 //   return Math.max(...lengths);
 // };
 
-// Binary dp attempt solution
 /**
+ // Binary dp attempt solution
  * @param {number[]} nums
  * @return {number}
  */
 var lengthOfLIS = function (nums) {
-  const binarySearchPosition = (dp, target, hi) => {
-    let lo = 0;
-    while (lo <= hi) {
-      let mid = Math.floor((lo + hi) / 2);
-      if (target === dp[mid]) return mid;
-      else if (target < dp[mid]) hi = mid - 1;
-      else lo = mid + 1;
+  const binarySearchPosition = (data, target, end) => {
+    let start = 0;
+    while (start <= end) {
+      // mid is index responsible for comparison
+      let mid = start + Math.floor((end - start) / 2);
+      if (target === data[mid]) return mid;
+      else if (target < data[mid]) end = mid - 1;
+      // if target is less than midpoint index value it will be added at existing location
+      else start = mid + 1;
+      // if target is greater than midpoint index value , increment start to look at new index after midpoint (next pile), it will be added at current mid + 1 (next to be screened)
     }
-    return lo;
+    return start;
   };
 
   if (nums === null || nums.length === 0) return 0;
   if (nums.length === 1) return 1;
-  let dp = new Array(nums.length).fill(Number.MAX_SAFE_INTEGER);
+  let data = new Array(nums.length).fill(Number.MAX_SAFE_INTEGER);
   for (let i = 0; i < nums.length; i++) {
-    let pos = binarySearchPosition(dp, nums[i], i);
-    dp[pos] = nums[i];
+    let pos = binarySearchPosition(data, nums[i], i);
+    data[pos] = nums[i];
   }
 
-  for (let i = dp.length - 1; i >= 0; i--) {
-    if (dp[i] !== Number.MAX_SAFE_INTEGER) return i + 1;
+  for (let i = data.length - 1; i >= 0; i--) {
+    if (data[i] !== Number.MAX_SAFE_INTEGER) return i + 1;
   }
 
   return 0;
