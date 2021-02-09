@@ -89,8 +89,6 @@ promiseFunc(5).then((res) => console.log(res));
 const successP = (n) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve("success"), n * 1000);
-    // throw new Error("error");
-    // reject("errerrrr");
   });
 };
 successP(2)
