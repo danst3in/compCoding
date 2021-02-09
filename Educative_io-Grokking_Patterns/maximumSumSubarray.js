@@ -47,15 +47,16 @@ const max_sub_array_of_size_k = function (k, arr) {
       //   numTracker
       // );
       sum -= arr[i]; // subtract exiting value from sum
-      console.log("sum after subtraction: ", sum);
+      // console.log("sum after subtraction: ", sum);
       currNums.shift(); // remove exiting value from currNums array
       i++; // increment start of window
     }
   }
 
-  if (numTracker[maxSum].length > 1) {
-    return numTracker[maxSum];
-  }
-  return numTracker[maxSum][0];
+  // if (numTracker[maxSum].length > 1) {
+  //   return numTracker[maxSum];
+  // }
+  // return numTracker[maxSum][0];
+  return maxSum;
 };
 console.log(max_sub_array_of_size_k(2, [2, 3, 4, 1, 5]));
