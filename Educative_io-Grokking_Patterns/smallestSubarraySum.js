@@ -21,5 +21,28 @@ Explanation: Smallest subarrays with a sum greater than or equal to '8' are [3, 
 
 const smallest_subarray_with_given_sum = function (s, arr) {
   // TODO: Write your code here
-  return -1;
+
+  // initializes var to hold sum info
+  let currSum = 0;
+
+  // initializes vars to hold length info
+  let minLen = Infinity;
+  let currLen = 0;
+
+  for (let i = 0, j = 0; j < arr.length; j++) {
+    currSum += arr[j]; // update sum
+    while (currSum >= s) {
+      currLen = j - i + 1; // update length
+      if (currLen < minLen) minLen = currLen;
+      currSum -= arr[i];
+      i++;
+    }
+  }
+
+  if (minLen === Infinity) return 0;
+  return minLen;
 };
+
+console.log(smallest_subarray_with_given_sum(7, [2, 1, 5, 2, 3, 2])); // should be 2
+console.log(smallest_subarray_with_given_sum(7, [2, 1, 5, 2, 8])); // should be 1
+console.log(smallest_subarray_with_given_sum(8, [3, 4, 1, 1, 6])); // should be 3
