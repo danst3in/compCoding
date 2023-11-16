@@ -19,5 +19,25 @@ Explanation: The numbers at index 0 and 2 add up to 11: 2+9=11
 
 const pair_with_targetsum = function (arr, target_sum) {
   // TODO: Write your code here
-  return [-1, -1];
+  currSum = 0;
+  resultArr = [];
+
+  for (let i = 0, j = arr.length - 1; i < j; ) {
+    if (arr[i] + arr[j] === target_sum) {
+      resultArr.push(i, j);
+    }
+    j -= 1;
+    if (arr[i] + arr[j] === target_sum) {
+      resultArr.push(i, j);
+    }
+    i += 1;
+    if (arr[i] + arr[j] === target_sum) {
+      resultArr.push(i, j);
+    }
+  }
+  if (!resultArr.length) return `no pairs found for target sum`;
+  return resultArr;
 };
+
+console.log(pair_with_targetsum([1, 2, 3, 4, 6], 6)); //  should be [1, 3]
+console.log(pair_with_targetsum([2, 5, 9, 11], 11)); // should be [0,2]
