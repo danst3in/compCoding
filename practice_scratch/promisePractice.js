@@ -68,7 +68,7 @@ timeoutPR(5);
 */
 
 // fresh try next day
-/*
+
 const promiseFunc = (n) => {
   return new Promise((resolve, reject) => {
     try {
@@ -79,7 +79,6 @@ const promiseFunc = (n) => {
   });
 };
 promiseFunc(5).then((res) => console.log(res));
-*/
 
 // Promise Practice
 // try writing a function success(n) that returns a promise that resolves to the string 'complete' in n seconds
@@ -89,10 +88,22 @@ promiseFunc(5).then((res) => console.log(res));
 const successP = (n) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => resolve("success"), n * 1000);
-    // throw new Error("error");
-    // reject("errerrrr");
   });
 };
 successP(2)
   .then((m) => console.log(m))
   .catch((e) => console.warn("e:", e));
+
+// Try with async and await
+
+const hooray = async (n) => {
+  return new Promise((resolve, reject) => {
+    try {
+      setTimeout(resolve("hooray!"), n * 1000);
+    } catch (err) {
+      reject(err);
+    }
+  });
+};
+const hoorayStatus = await hooray(4);
+console.log(hoorayStatus);
