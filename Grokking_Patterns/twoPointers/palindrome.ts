@@ -13,9 +13,7 @@ function isPalindrome(s: string) {
 	return true;
 }
 
-// isPalindrome("racecar");
 console.log('🚀 ~ isPalindrome("racecar"):', isPalindrome('racecar'));
-console.log('🚀 ~ isPalindrome("kaYak"):', isPalindrome('kaYak'));
 console.log('🚀 ~ isPalindrome("kaYak"):', isPalindrome('kaYak'));
 // function isPalindrome(s: string) {
 //   const workingArr = s.split("");
