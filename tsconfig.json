@@ -23,7 +23,9 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUncheckedSideEffectImports": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "useUnknownInCatchVariables": true,
+    "erasableSyntaxOnly": true
   },
   "include": ["./**/*.ts"],
   "exclude": ["node_modules", "eslint.config.js"]

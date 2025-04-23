@@ -2,6 +2,8 @@
   "name": "compcoding",
   "version": "1.0.0",
   "description": "algorithms and subject matter deep dives",
+  "exports": null,
+  "type": "module",
   "scripts": {
     "format": "npm run eslint -- --fix && npm run prettier -- --write",
     "lint": "npm run eslint && npm run prettier && tsc --noEmit",
