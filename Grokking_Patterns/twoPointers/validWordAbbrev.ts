@@ -34,23 +34,23 @@ function validWordAbbreviation(word: string, abbr: string) {
 			while (pAbbr < abbr.length && Number.isFinite(Number(abbr[pAbbr]))) {
 				numStr = numStr * 10 + parseInt(abbr[pAbbr]);
 				pAbbr++;
-				console.log(
-					'🚀 ~ validWordAbbrev.ts:38 ~ validWordAbbreviation ~ numStr:',
-					numStr,
-				);
+				// console.log(
+				// 	'🚀 ~ validWordAbbrev.ts:38 ~ validWordAbbreviation ~ numStr:',
+				// 	numStr,
+				// );
 			}
 			pWord += numStr;
-			console.log(
-				'🚀 ~ validWordAbbrev.ts:42 ~ validWordAbbreviation ~ pWord, word[pWord]:',
-				pWord,
-				word[pWord],
-			);
+			// console.log(
+			// 	'🚀 ~ validWordAbbrev.ts:42 ~ validWordAbbreviation ~ pWord, word[pWord]:',
+			// 	pWord,
+			// 	word[pWord],
+			// );
 
-			console.log(
-				'🚀 ~ validWordAbbrev.ts:48 ~ validWordAbbreviation ~ pAbbr, abbr[pAbbr]:',
-				pAbbr,
-				abbr[pAbbr],
-			);
+			// console.log(
+			// 	'🚀 ~ validWordAbbrev.ts:48 ~ validWordAbbreviation ~ pAbbr, abbr[pAbbr]:',
+			// 	pAbbr,
+			// 	abbr[pAbbr],
+			// );
 		} else {
 			if (word[pWord] != abbr[pAbbr] || pWord >= word.length) {
 				return false;
