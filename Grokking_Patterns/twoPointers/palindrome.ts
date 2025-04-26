@@ -1,8 +1,8 @@
 // Optimized 3rd attempt
 function isPalindrome(s: string) {
-	if (s.length == 0) {
-		return true;
-	}
+	// if (s.length == 0) {
+	// 	return true;
+	// }
 
 	let i = 0;
 	let j = s.length - 1;
