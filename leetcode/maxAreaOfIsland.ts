@@ -31,66 +31,51 @@ const dir = [
 	[-1, 0],
 ];
 
-function walk(
-	grid: number[][],
-	curr: Point,
-	// seen: boolean[][],
-	// currArea: number,
-): boolean {
+function walk(grid: number[][], curr: Point): number {
 	// Base Cases
 	// off grid
 	if (curr.x < 0 || curr.x >= grid[0].length || curr.y < 0 || curr.y >= grid.length) {
-		return false;
+		return 0;
 	}
 
 	// previously visted
-	if (seen[curr.y][curr.x]) {
-		return false;
+	if (grid[curr.y][curr.x] === 0) {
+		return 0;
 	}
 	// recursion section
 	// pre
-	seen[curr.y][curr.x] = true;
+	grid[curr.y][curr.x] = 0;
 
 	// start recurse
 	// part of island
-	if (grid[curr.y][curr.x] === 1) {
+	let currArea = 1;
+
+	// increment area
+	for (let i = 0; i < dir.length; i++) {
+		const [y, x] = dir[i];
 		// increment area
-		for (let i = 0; i < dir.length; i++) {
-			const [x, y] = dir[i];
-			if (walk(grid, { x: curr.x + x, y: curr.y + y }, seen, currArea)) {
-				// increment area
-				currArea++;
-				// return true;
-			}
-		}
-		return true;
+		currArea += walk(grid, { x: curr.x + x, y: curr.y + y });
 	}
 
 	// post
 
-	return false;
+	return currArea;
 }
 function maxAreaOfIsland(grid: number[][]): number {
-	let max = 0;
+	let maxArea = 0;
 
 	// Base Cases
 	// off grid
 	// previously visted
 
-	const seen: boolean[][] = [];
-	// manually all to false
-	for (let i = 0; i < grid.length; i++) {
-		seen.push(new Array(grid[0].length).fill(false));
-	}
-
 	//  Need to accumulate current island area
-	let currArea = 0;
-	for (let i = 0; i < grid[0].length; i++) {
-		for (let j = 0; j < grid.length; j++) {
-			currArea = Math.max(currArea, walk(grid, { x: i, y: j }, seen, currArea));
+
+	for (let i = 0; i < grid.length; i++) {
+		for (let j = 0; j < grid[0].length; j++) {
+			maxArea = Math.max(maxArea, walk(grid, { x: j, y: i }));
 		}
 	}
 
 	// present results
-	return currArea;
+	return maxArea;
 }
