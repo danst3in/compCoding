@@ -3,14 +3,26 @@ type DeviceInfo = {
 	cost: number;
 };
 
+// Represents a complete state after processing 'i' stages
+type State = {
+	totalReliability: number;
+	// An array storing the number of copies [m1, m2, ..., mi]
+	copiesHistory: number[];
+};
+
 /**
- * Solves the reliability design problem using the set method (dynamic programming approach)
- * with sophisticated pruning of Pareto-optimal solutions.
+ * Solves the reliability design problem using the set method (dynamic programming
+ * approach) and returns the max reliability and the optimal configuration (copies per
+ * device) with sophisticated pruning of Pareto-optimal solutions.
  * @param devices Information about each device in the series system.
  * @param budget The maximum allowed total cost.
- * @returns The maximum possible system reliability within the budget.
+ * @returns An object containing the maximum reliability and the optimal copies array,
+ *          or null if no valid configuration is found.
  */
-function solveReliabilityDesign(devices: DeviceInfo[], budget: number): number {
+function solveReliabilityDesignWithConfig(
+	devices: DeviceInfo[],
+	budget: number,
+): { maxReliability: number; optimalCopies: number[] } | null {
 	const numStages = devices.length;
 
 	// Calculate precise upper bounds
@@ -20,68 +32,88 @@ function solveReliabilityDesign(devices: DeviceInfo[], budget: number): number {
 		return Math.floor(remainingBudget / d.cost) + 1;
 	});
 
-	// S will store the set of optimal (cost -> max reliability) pairs for the current stage
-	let S: Map<number, number> = new Map();
-	S.set(0, 1.0); // Initial state: reliability 1.0, cost 0 before the first stage
+	// S will store the set of optimal states for the current stage.
+	// Map key: total cost | Map value: State object (including reliability and copies history)
+	let S: Map<number, State> = new Map();
+	S.set(0, { totalReliability: 1.0, copiesHistory: [] });
+
+	console.log('--- Starting Reliability Design DP ---');
+	console.log(`Initial State (Stage 0):`, Array.from(S.entries()));
 
 	for (let i = 0; i < numStages; i++) {
 		const { reliability, cost } = devices[i];
 		const maxCopies = maxCopiesPerDevice[i];
-		const nextS: Map<number, number> = new Map();
+		const nextS: Map<number, State> = new Map();
 
 		for (let copies = 1; copies <= maxCopies; copies++) {
 			const stageReliability = 1 - Math.pow(1 - reliability, copies);
 			const stageCost = cost * copies;
 
-			for (const [prevCost, prevReliability] of S.entries()) {
-				const newTotalCost = prevCost + stageCost;
-				const newTotalReliability = prevReliability * stageReliability;
+			for (const [prevTotalCost, prevState] of S.entries()) {
+				const newTotalCost = prevTotalCost + stageCost;
 
 				if (newTotalCost <= budget) {
-					// Check if a better reliability for the same or lower cost exists in nextS
-					let isDominated = false;
-					for (const [existingCost, existingReliability] of nextS.entries()) {
-						if (
-							existingCost <= newTotalCost &&
-							existingReliability >= newTotalReliability
-						) {
-							isDominated = true;
-							break;
-						}
+					const newTotalReliability =
+						prevState.totalReliability * stageReliability;
+					const newCopiesHistory = [...prevState.copiesHistory, copies];
+
+					const newState: State = {
+						totalReliability: newTotalReliability,
+						copiesHistory: newCopiesHistory,
+					};
+
+					// Pruning logic (same as before)
+					const existingState = nextS.get(newTotalCost);
+					if (
+						existingState &&
+						existingState.totalReliability >= newTotalReliability
+					) {
+						continue;
 					}
+					nextS.set(newTotalCost, newState);
 
-					if (!isDominated) {
-						// Add the new solution, overriding any strictly worse solution for the same cost
-						nextS.set(newTotalCost, newTotalReliability);
-
-						// Further pruning: Remove any existing entries in nextS that are now dominated by the new entry
-						for (const [
-							existingCost,
-							existingReliability,
-						] of nextS.entries()) {
-							if (
-								newTotalCost < existingCost &&
-								newTotalReliability >= existingReliability
-							) {
-								nextS.delete(existingCost);
-							}
+					for (const [existingCost, existingStateValue] of nextS.entries()) {
+						if (
+							newTotalCost < existingCost &&
+							newTotalReliability >= existingStateValue.totalReliability
+						) {
+							nextS.delete(existingCost);
 						}
 					}
 				}
 			}
 		}
-		S = nextS;
+		S = nextS; // Update S for the next stage
+
+		// --- Visualization Log ---
+		console.log(`\n--- End of Stage ${i + 1} (Device R=${reliability}) ---`);
+		console.log(`Number of Pareto-optimal states found: ${S.size}`);
+		// Log the actual content in a readable format
+		const visualizedSet = Array.from(S.entries()).map(([cost, state]) => ({
+			Cost: cost,
+			Reliability: state.totalReliability.toFixed(4),
+			Copies: `[${state.copiesHistory.join(',')}]`,
+		}));
+		console.table(visualizedSet);
+
+		console.log('\n--- DP Process Complete ---');
 	}
 
-	// Find the maximum reliability among all valid states within the budget
+	// Find the final optimal solution (same as before)
 	let maxReliability = 0.0;
-	for (const reliabilityValue of S.values()) {
-		if (reliabilityValue > maxReliability) {
-			maxReliability = reliabilityValue;
+	let optimalConfig: number[] | null = null;
+	for (const state of S.values()) {
+		if (state.totalReliability > maxReliability) {
+			maxReliability = state.totalReliability;
+			optimalConfig = state.copiesHistory;
 		}
 	}
 
-	return maxReliability;
+	if (optimalConfig && maxReliability > 0) {
+		return { maxReliability: maxReliability, optimalCopies: optimalConfig };
+	} else {
+		return null;
+	}
 }
 
 // --- Example Usage ---
@@ -92,5 +124,16 @@ const devices: DeviceInfo[] = [
 ];
 const budget = 145;
 
-const resultReliability = solveReliabilityDesign(devices, budget);
-console.log(`Maximum system reliability within budget: ${resultReliability}`);
+const result = solveReliabilityDesignWithConfig(devices, budget);
+
+if (result) {
+	console.log(`\nFinal Result:`);
+	console.log(
+		`Maximum system reliability within budget: ${result.maxReliability.toFixed(4)}`,
+	);
+	console.log(
+		`Optimal device configuration (copies per stage): [${result.optimalCopies.join(', ')}]`,
+	);
+} else {
+	console.log('No feasible solution found within the budget.');
+}
